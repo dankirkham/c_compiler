@@ -25,41 +25,41 @@ class Token:
 
 TOKENS = [
     {
-		'type': 'open_brace',
-		'regex': re.compile('{')
-	},
+        'type': 'open_brace',
+        'regex': re.compile('{')
+    },
     {
-		'type': 'close_brace',
-		'regex': re.compile('}')
-	},
+        'type': 'close_brace',
+        'regex': re.compile('}')
+    },
     {
-		'type': 'open_parenthesis',
-		'regex': re.compile('\(')
-	},
+        'type': 'open_parenthesis',
+        'regex': re.compile('\(')
+    },
     {
-		'type': 'close_parenthesis',
-		'regex': re.compile('\)')
-	},
+        'type': 'close_parenthesis',
+        'regex': re.compile('\)')
+    },
     {
-		'type': 'semicolon',
-		'regex': re.compile(';')
-	},
+        'type': 'semicolon',
+        'regex': re.compile(';')
+    },
     {
-		'type': 'int_keyword',
-		'regex': re.compile('int')
-	},
+        'type': 'int_keyword',
+        'regex': re.compile('int')
+    },
     {
-		'type': 'return_keyword',
-		'regex': re.compile('return')
-	},
+        'type': 'return_keyword',
+        'regex': re.compile('return')
+    },
     {
-		'type': 'identifer',
-		'regex': re.compile('[a-zA-Z]\w*')
-	},
+        'type': 'identifer',
+        'regex': re.compile('[a-zA-Z]\w*')
+    },
     {
-		'type': 'integer_literal',
-		'regex': re.compile('[0-9]+')
-	},
+        'type': 'integer_literal',
+        'regex': re.compile('[0-9]+')
+    },
 ]
 
 def lex(string):
