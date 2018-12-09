@@ -24,3 +24,25 @@ class TestLexer(unittest.TestCase):
 
         for actual, expected in zip_longest(tokens, expected_tokens):
             self.assertEqual(actual, expected)
+
+    def test_lexer_whitespace(self):
+        source = '''int
+            main(   ) {return 2;
+}
+'''
+        tokens = lex(source)
+
+        expected_tokens = [
+            Token(type='int_keyword', value='int', line=1, col=1),
+            Token(type='identifer', value='main', line=2, col=13),
+            Token(type='open_parenthesis', value='(', line=2, col=17),
+            Token(type='close_parenthesis', value=')', line=2, col=21),
+            Token(type='open_brace', value='{', line=2, col=23),
+            Token(type='return_keyword', value='return', line=2, col=24),
+            Token(type='integer_literal', value='2', line=2, col=31),
+            Token(type='semicolon', value=';', line=2, col=32),
+            Token(type='close_brace', value='}', line=3, col=1)
+        ]
+
+        for actual, expected in zip_longest(tokens, expected_tokens):
+            self.assertEqual(actual, expected)
