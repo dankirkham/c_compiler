@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import re
 from c_compiler.lexer import lex
@@ -12,7 +14,8 @@ def determine_filename(args):
     # Swap .c with .S
     m = re.search("(.*)\.[cC]", args.source_file)
     if m:
-        return m.group(1) + '.S'
+        # return m.group(1) + '.S'
+        return m.group(1)
 
     # Last resort, append .S
     return args.source_file + '.S'
