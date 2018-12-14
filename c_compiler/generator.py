@@ -11,8 +11,8 @@ def generate_statement(statement, f):
 def generate_function(function, f):
     label = function.name
 
-    f.write(".globl _{}\n".format(label))
-    f.write("_{}:\n".format(label))
+    f.write(".globl {}\n".format(label))
+    f.write("{}:\n".format(label))
 
     # TODO: Generate all body statements
     generate_statement(function.statement, f)
