@@ -9,7 +9,7 @@ cd ..
 python3.5 -m c_compiler $DIR/$1
 
 # Assemble
-gcc -m32 $DIR/$ASM_FILE -o $DIR/$EXE_FILE
+gcc -m64 $DIR/$ASM_FILE -o $DIR/$EXE_FILE
 rm $DIR/$ASM_FILE
 
 # Make Executeable
