@@ -31,12 +31,24 @@ def _expect(token, types):
     if token.type not in types:
         raise ParserError("Expected {} at {}".format(types, token))
 
-def parse_expression(tokens):
+def parse_unary_operator(tokens):
     token = next(tokens)
+    operator = token.type
 
-    _expect(token, 'integer_literal')
+    expression = parse_expression(tokens);
 
-    return ast_data_structures.Constant(int(token.value))
+    return ast_data_structures.UnaryOperator(operator, expression)
+
+def parse_expression(tokens):
+    if tokens.peek().type in ['negation', 'bitwise_complement', 'logical_negation']:
+        # Unary Operator
+        return parse_unary_operator(tokens)
+    else:
+        # Expression
+        token = next(tokens)
+        _expect(token, 'integer_literal')
+
+        return ast_data_structures.Constant(int(token.value))
 
 def parse_statement(tokens):
     token = next(tokens)

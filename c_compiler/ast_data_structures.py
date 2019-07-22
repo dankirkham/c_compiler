@@ -33,3 +33,12 @@ class Constant:
 
     def __repr__(self):
         return '''IntegerLiteral: {}'''.format(repr(self.integer))
+
+class UnaryOperator:
+    def __init__(self, operator, expression):
+        self.operator = operator
+        self.expression = expression
+
+    def __repr__(self):
+        return '''UnaryOperator: {}
+Expression: {}'''.format(self.operator, repr(self.expression))

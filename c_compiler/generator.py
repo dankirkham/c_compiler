@@ -1,5 +1,20 @@
+from c_compiler import ast_data_structures
+
 def generate_expression(expression, f):
-    f.write("movl    ${}, %eax\n".format(expression.integer))
+    if isinstance(expression, ast_data_structures.UnaryOperator):
+        generate_expression(expression.expression, f)
+
+        if expression.operator == 'negation':
+            f.write("neg     %eax\n")
+        elif expression.operator == 'bitwise_complement':
+            f.write("not     %eax\n")
+        elif expression.operator == 'logical_negation':
+            f.write("cmpl    $0, %eax\n")
+            f.write("movl    $0, %eax\n")
+            f.write("sete    %al\n")
+    else:
+        # Constant Expression
+        f.write("movl    ${}, %eax\n".format(expression.integer))
 
 def generate_statement(statement, f):
     # TODO: Currently assuming return statement

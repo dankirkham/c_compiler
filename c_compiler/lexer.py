@@ -60,6 +60,18 @@ TOKENS = [
         'type': 'integer_literal',
         'regex': re.compile('[0-9]+')
     },
+    {
+        'type': 'negation',
+        'regex': re.compile('\-')
+    },
+    {
+        'type': 'bitwise_complement',
+        'regex': re.compile('~')
+    },
+    {
+        'type': 'logical_negation',
+        'regex': re.compile('!')
+    },
 ]
 
 def lex(string):
