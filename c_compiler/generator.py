@@ -35,10 +35,8 @@ def generate_term(term, f):
             f.write("imul    %rcx, %rax\n")
         elif operation == 'division_operator':
             f.write("pop     %rcx\n") # e2 to RCX
-            f.write("movq    $0, %rdx\n") # Zero RDX
             f.write("cqto\n")
             f.write("idivq   %rcx\n")
-            f.write("movq    %rcx, %rax\n") # Move answer to RAX
 
 def generate_expression(expression, f):
     operations = reversed(expression.operations)
