@@ -42,3 +42,33 @@ class UnaryOperator:
     def __repr__(self):
         return '''UnaryOperator: {}
 Expression: {}'''.format(self.operator, repr(self.expression))
+
+class Expression:
+    def __init__(self, terms, operations):
+        self.terms = terms
+        self.operations = operations
+
+    def __repr__(self):
+        s = "Expression:\n"
+
+        for term, operation in zip(self.terms, self.operations):
+            s += repr(term)
+            if operation:
+                s += "Operation: {}".format(operation)
+
+        return s
+
+class Term:
+    def __init__(self, factors, operations):
+        self.factors = factors
+        self.operations = operations
+
+    def __repr__(self):
+        s = "Term:\n"
+
+        for factor, operation in zip(self.factors, self.operations):
+            s += repr(factor)
+            if operation:
+                s += "Operation: {}".format(operation)
+
+        return s

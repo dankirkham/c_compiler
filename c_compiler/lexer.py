@@ -72,6 +72,18 @@ TOKENS = [
         'type': 'logical_negation',
         'regex': re.compile('!')
     },
+    {
+        'type': 'addition_operator',
+        'regex': re.compile('\+')
+    },
+    {
+        'type': 'multiplication_operator',
+        'regex': re.compile('\*')
+    },
+    {
+        'type': 'division_operator',
+        'regex': re.compile('\/')
+    },
 ]
 
 def lex(string):

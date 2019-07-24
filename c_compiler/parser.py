@@ -39,16 +39,46 @@ def parse_unary_operator(tokens):
 
     return ast_data_structures.UnaryOperator(operator, expression)
 
-def parse_expression(tokens):
-    if tokens.peek().type in ['negation', 'bitwise_complement', 'logical_negation']:
+def parse_factor(tokens):
+    if tokens.peek().type == 'open_parenthesis':
+        # Parenthesis
+        next(tokens)
+        expression = parse_expression(tokens)
+        _expect(next(tokens), 'close_parenthesis')
+        return expression
+    elif tokens.peek().type in ['negation', 'bitwise_complement', 'logical_negation']:
         # Unary Operator
         return parse_unary_operator(tokens)
     else:
-        # Expression
+        # Constant
         token = next(tokens)
         _expect(token, 'integer_literal')
 
         return ast_data_structures.Constant(int(token.value))
+
+def parse_term(tokens):
+    factors = []
+    operations = []
+
+    factors.append(parse_factor(tokens))
+
+    while tokens.peek().type in ['multiplication_operator', 'division_operator']:
+        operations.append(next(tokens).type)
+        factors.append(parse_factor(tokens))
+
+    return ast_data_structures.Term(factors, operations)
+
+def parse_expression(tokens):
+    terms = []
+    operations = []
+
+    terms.append(parse_term(tokens))
+
+    while tokens.peek().type in ['addition_operator', 'negation']:
+        operations.append(next(tokens).type)
+        terms.append(parse_term(tokens))
+
+    return ast_data_structures.Expression(terms, operations)
 
 def parse_statement(tokens):
     token = next(tokens)
