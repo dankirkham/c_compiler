@@ -36,13 +36,13 @@ class Constant:
         return '''IntegerLiteral: {}\n'''.format(repr(self.integer))
 
 class UnaryOperator:
-    def __init__(self, operator, expression):
+    def __init__(self, operator, factor):
         self.operator = operator
-        self.expression = expression
+        self.factor = factor
 
     def __repr__(self):
         return '''UnaryOperator: {}
-Expression: {}'''.format(self.operator, repr(self.expression))
+Factor: {}'''.format(self.operator, repr(self.factor))
 
 class Expression:
     def __init__(self, terms, operations):

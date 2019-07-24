@@ -2,7 +2,7 @@ from c_compiler import ast_data_structures
 
 def generate_factor(factor, f):
     if isinstance(factor, ast_data_structures.UnaryOperator):
-        generate_expression(factor.expression, f)
+        generate_factor(factor.factor, f)
 
         if factor.operator == 'negation':
             f.write("neg     %rax\n")
@@ -18,9 +18,9 @@ def generate_factor(factor, f):
         f.write("movq    ${}, %rax\n".format(factor.integer))
 
 def generate_term(term, f):
-    operations = iter(term.operations)
+    operations = reversed(term.operations)
 
-    for factor in term.factors:
+    for factor in reversed(term.factors):
         generate_factor(factor, f)
 
         try:
@@ -29,23 +29,21 @@ def generate_term(term, f):
         except StopIteration:
             pass
 
-    for operation in term.operations:
+    for operation in reversed(term.operations):
         if operation == 'multiplication_operator':
             f.write("pop     %rcx\n")
             f.write("imul    %rcx, %rax\n")
         elif operation == 'division_operator':
-            # TODO: Tighten up
-            f.write("pop     %rdx\n") # e1 to RDX
-            f.write("movq    %rax, %rcx\n") # e2 to RCX
-            f.write("movq    %rdx, %rax\n") # e1 to RAX
+            f.write("pop     %rcx\n") # e2 to RCX
             f.write("movq    $0, %rdx\n") # Zero RDX
-            # f.write("cqto\n")
+            f.write("cqto\n")
             f.write("idivq   %rcx\n")
+            f.write("movq    %rcx, %rax\n") # Move answer to RAX
 
 def generate_expression(expression, f):
-    operations = iter(expression.operations)
+    operations = reversed(expression.operations)
 
-    for term in expression.terms:
+    for term in reversed(expression.terms):
         generate_term(term, f)
 
         try:
@@ -54,12 +52,12 @@ def generate_expression(expression, f):
         except StopIteration:
             pass
 
-    for operation in expression.operations:
+    for operation in reversed(expression.operations):
         f.write("pop     %rcx\n")
         if operation == 'negation':
-            # TODO: Tighten up subtraction
-            f.write("neg     %rax\n")
-        f.write("addq    %rcx, %rax\n")
+            f.write("subq    %rcx, %rax\n")
+        elif operation == 'addition_operator':
+            f.write("addq    %rcx, %rax\n")
 
 def generate_statement(statement, f):
     # TODO: Currently assuming return statement

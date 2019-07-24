@@ -35,9 +35,9 @@ def parse_unary_operator(tokens):
     token = next(tokens)
     operator = token.type
 
-    expression = parse_expression(tokens);
+    factor = parse_factor(tokens);
 
-    return ast_data_structures.UnaryOperator(operator, expression)
+    return ast_data_structures.UnaryOperator(operator, factor)
 
 def parse_factor(tokens):
     if tokens.peek().type == 'open_parenthesis':
