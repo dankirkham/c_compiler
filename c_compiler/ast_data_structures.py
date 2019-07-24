@@ -1,4 +1,5 @@
 import textwrap
+from itertools import zip_longest
 
 indent = lambda s: textwrap.indent(s, '\t')
 
@@ -32,7 +33,7 @@ class Constant:
         self.integer = integer
 
     def __repr__(self):
-        return '''IntegerLiteral: {}'''.format(repr(self.integer))
+        return '''IntegerLiteral: {}\n'''.format(repr(self.integer))
 
 class UnaryOperator:
     def __init__(self, operator, expression):
@@ -51,10 +52,10 @@ class Expression:
     def __repr__(self):
         s = "Expression:\n"
 
-        for term, operation in zip(self.terms, self.operations):
+        for term, operation in zip_longest(self.terms, self.operations):
             s += repr(term)
             if operation:
-                s += "Operation: {}".format(operation)
+                s += "Operation: {}\n".format(operation)
 
         return s
 
@@ -66,9 +67,9 @@ class Term:
     def __repr__(self):
         s = "Term:\n"
 
-        for factor, operation in zip(self.factors, self.operations):
+        for factor, operation in zip_longest(self.factors, self.operations):
             s += repr(factor)
             if operation:
-                s += "Operation: {}".format(operation)
+                s += "Operation: {}\n".format(operation)
 
         return s
