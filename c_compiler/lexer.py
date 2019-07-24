@@ -26,63 +26,63 @@ class Token:
 TOKENS = [
     {
         'type': 'open_brace',
-        'regex': re.compile('{')
+        'regex': re.compile('({)')
     },
     {
         'type': 'close_brace',
-        'regex': re.compile('}')
+        'regex': re.compile('(})')
     },
     {
         'type': 'open_parenthesis',
-        'regex': re.compile('\(')
+        'regex': re.compile('(\()')
     },
     {
         'type': 'close_parenthesis',
-        'regex': re.compile('\)')
+        'regex': re.compile('(\))')
     },
     {
         'type': 'semicolon',
-        'regex': re.compile(';')
+        'regex': re.compile('(;)')
     },
     {
         'type': 'int_keyword',
-        'regex': re.compile('int')
+        'regex': re.compile('(int)(?:\W|$)')
     },
     {
         'type': 'return_keyword',
-        'regex': re.compile('return')
+        'regex': re.compile('(return)(?:\W|$)')
     },
     {
         'type': 'identifer',
-        'regex': re.compile('[a-zA-Z]\w*')
+        'regex': re.compile('([a-zA-Z]\w*)')
     },
     {
         'type': 'integer_literal',
-        'regex': re.compile('[0-9]+')
+        'regex': re.compile('([0-9]+)')
     },
     {
         'type': 'negation',
-        'regex': re.compile('\-')
+        'regex': re.compile('(\-)')
     },
     {
         'type': 'bitwise_complement',
-        'regex': re.compile('~')
+        'regex': re.compile('(~)')
     },
     {
         'type': 'logical_negation',
-        'regex': re.compile('!')
+        'regex': re.compile('(!)')
     },
     {
         'type': 'addition_operator',
-        'regex': re.compile('\+')
+        'regex': re.compile('(\+)')
     },
     {
         'type': 'multiplication_operator',
-        'regex': re.compile('\*')
+        'regex': re.compile('(\*)')
     },
     {
         'type': 'division_operator',
-        'regex': re.compile('\/')
+        'regex': re.compile('(\/)')
     },
 ]
 
@@ -101,7 +101,7 @@ def lex(string):
                 if not m:
                     continue
 
-                token = Token(type=TOKEN['type'], value=m.group(0), line=line_number, col=m.span()[0] + col)
+                token = Token(type=TOKEN['type'], value=m.group(1), line=line_number, col=m.span()[0] + col)
 
                 if not leftmost_token or leftmost_token.col > token.col:
                     leftmost_token = token
