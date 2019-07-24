@@ -29,6 +29,7 @@ def main():
 
     print(tokens)
     ast = parse(tokens)
+    print(ast)
     generate(ast, determine_filename(args))
 
 if __name__ == "__main__":
