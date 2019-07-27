@@ -68,7 +68,7 @@ def parse_term(tokens):
 
     return ast_data_structures.Term(factors, operations)
 
-def parse_expression(tokens):
+def parse_additive_expression(tokens):
     terms = []
     operations = []
 
@@ -78,7 +78,55 @@ def parse_expression(tokens):
         operations.append(next(tokens).type)
         terms.append(parse_term(tokens))
 
-    return ast_data_structures.Expression(terms, operations)
+    return ast_data_structures.AdditiveExpression(terms, operations)
+
+def parse_relational_expression(tokens):
+    additive_expressions = []
+    operations = []
+
+    additive_expressions.append(parse_additive_expression(tokens))
+
+    while tokens.peek().type in ['less_than', 'less_than_or_equal', 'greater_than', 'greater_than_or_equal']:
+        operations.append(next(tokens).type)
+        additive_expressions.append(parse_additive_expression(tokens))
+
+    return ast_data_structures.RelationalExpression(additive_expressions, operations)
+
+def parse_equality_expression(tokens):
+    relational_expressions = []
+    operations = []
+
+    relational_expressions.append(parse_relational_expression(tokens))
+
+    while tokens.peek().type in ['equal_comparison', 'not_equal_comparison']:
+        operations.append(next(tokens).type)
+        relational_expressions.append(parse_relational_expression(tokens))
+
+    return ast_data_structures.EqualityExpression(relational_expressions, operations)
+
+def parse_logical_and_expression(tokens):
+    equality_expressions = []
+    operations = []
+
+    equality_expressions.append(parse_equality_expression(tokens))
+
+    while tokens.peek().type in ['logical_and']:
+        operations.append(next(tokens).type)
+        equality_expressions.append(parse_equality_expression(tokens))
+
+    return ast_data_structures.LogicalAndExpression(equality_expressions, operations)
+
+def parse_expression(tokens):
+    logical_and_expressions = []
+    operations = []
+
+    logical_and_expressions.append(parse_logical_and_expression(tokens))
+
+    while tokens.peek().type in ['logical_or']:
+        operations.append(next(tokens).type)
+        logical_and_expressions.append(parse_logical_and_expression(tokens))
+
+    return ast_data_structures.Expression(logical_and_expressions, operations)
 
 def parse_statement(tokens):
     token = next(tokens)

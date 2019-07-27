@@ -84,6 +84,38 @@ TOKENS = [
         'type': 'division_operator',
         'regex': re.compile('(\/)')
     },
+    {
+        'type': 'logical_and',
+        'regex': re.compile('(\&\&)')
+    },
+    {
+        'type': 'logical_or',
+        'regex': re.compile('(\|\|)')
+    },
+    {
+        'type': 'equal_comparison',
+        'regex': re.compile('(==)')
+    },
+    {
+        'type': 'not_equal_comparison',
+        'regex': re.compile('(\!=)')
+    },
+    {
+        'type': 'less_than',
+        'regex': re.compile('(\<[^=])')
+    },
+    {
+        'type': 'less_than_or_equal',
+        'regex': re.compile('(\<=)')
+    },
+    {
+        'type': 'greater_than',
+        'regex': re.compile('(\>[^=])')
+    },
+    {
+        'type': 'greater_than_or_equal',
+        'regex': re.compile('(\>=)')
+    },
 ]
 
 def lex(string):
