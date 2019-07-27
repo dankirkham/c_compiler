@@ -70,7 +70,7 @@ TOKENS = [
     },
     {
         'type': 'logical_negation',
-        'regex': re.compile('(!)')
+        'regex': re.compile('(!)[^=]')
     },
     {
         'type': 'addition_operator',
