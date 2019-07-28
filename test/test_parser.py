@@ -32,8 +32,8 @@ class TestParser(unittest.TestCase):
         self.assertTrue(isinstance(statement, ast_data_structures.ReturnStatement))
 
         # Expression
-        expression = statement.expression
-        self.assertTrue(isinstance(expression, ast_data_structures.Expression))
+        # expression = statement.expression
+        # self.assertTrue(isinstance(expression, ast_data_structures.Expression))
 
         # Term
         # term = expression.terms[0]

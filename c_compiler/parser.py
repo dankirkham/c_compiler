@@ -57,76 +57,64 @@ def parse_factor(tokens):
         return ast_data_structures.Constant(int(token.value))
 
 def parse_term(tokens):
-    factors = []
-    operations = []
-
-    factors.append(parse_factor(tokens))
+    root_expression = parse_factor(tokens)
 
     while tokens.peek().type in ['multiplication_operator', 'division_operator']:
-        operations.append(next(tokens).type)
-        factors.append(parse_factor(tokens))
+        operation = next(tokens).type
+        e2 = parse_factor(tokens)
+        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
-    return ast_data_structures.Term(factors, operations)
+    return root_expression
 
 def parse_additive_expression(tokens):
-    terms = []
-    operations = []
-
-    terms.append(parse_term(tokens))
+    root_expression = parse_term(tokens)
 
     while tokens.peek().type in ['addition_operator', 'negation']:
-        operations.append(next(tokens).type)
-        terms.append(parse_term(tokens))
+        operation = next(tokens).type
+        e2 = parse_term(tokens)
+        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
-    return ast_data_structures.AdditiveExpression(terms, operations)
+    return root_expression
 
 def parse_relational_expression(tokens):
-    additive_expressions = []
-    operations = []
-
-    additive_expressions.append(parse_additive_expression(tokens))
+    root_expression = parse_additive_expression(tokens)
 
     while tokens.peek().type in ['less_than', 'less_than_or_equal', 'greater_than', 'greater_than_or_equal']:
-        operations.append(next(tokens).type)
-        additive_expressions.append(parse_additive_expression(tokens))
+        operation = next(tokens).type
+        e2 = parse_additive_expression(tokens)
+        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
-    return ast_data_structures.RelationalExpression(additive_expressions, operations)
+    return root_expression
 
 def parse_equality_expression(tokens):
-    relational_expressions = []
-    operations = []
-
-    relational_expressions.append(parse_relational_expression(tokens))
+    root_expression = parse_relational_expression(tokens)
 
     while tokens.peek().type in ['equal_comparison', 'not_equal_comparison']:
-        operations.append(next(tokens).type)
-        relational_expressions.append(parse_relational_expression(tokens))
+        operation = next(tokens).type
+        e2 = parse_relational_expression(tokens)
+        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
-    return ast_data_structures.EqualityExpression(relational_expressions, operations)
+    return root_expression
 
 def parse_logical_and_expression(tokens):
-    equality_expressions = []
-    operations = []
-
-    equality_expressions.append(parse_equality_expression(tokens))
+    root_expression = parse_equality_expression(tokens)
 
     while tokens.peek().type in ['logical_and']:
-        operations.append(next(tokens).type)
-        equality_expressions.append(parse_equality_expression(tokens))
+        operation = next(tokens).type
+        e2 = parse_equality_expression(tokens)
+        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
-    return ast_data_structures.LogicalAndExpression(equality_expressions, operations)
+    return root_expression
 
 def parse_expression(tokens):
-    logical_and_expressions = []
-    operations = []
-
-    logical_and_expressions.append(parse_logical_and_expression(tokens))
+    root_expression = parse_logical_and_expression(tokens)
 
     while tokens.peek().type in ['logical_or']:
-        operations.append(next(tokens).type)
-        logical_and_expressions.append(parse_logical_and_expression(tokens))
+        operation = next(tokens).type
+        e2 = parse_logical_and_expression(tokens)
+        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
-    return ast_data_structures.Expression(logical_and_expressions, operations)
+    return root_expression
 
 def parse_statement(tokens):
     token = next(tokens)
