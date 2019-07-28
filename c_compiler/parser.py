@@ -56,65 +56,23 @@ def parse_factor(tokens):
 
         return ast_data_structures.Constant(int(token.value))
 
-def parse_term(tokens):
-    root_expression = parse_factor(tokens)
+def parse_binary_operation(tokens, child_function, operations):
+    root_expression = child_function(tokens)
 
-    while tokens.peek().type in ['multiplication_operator', 'division_operator']:
+    while tokens.peek().type in operations:
         operation = next(tokens).type
-        e2 = parse_factor(tokens)
+        e2 = child_function(tokens)
         root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
 
     return root_expression
 
-def parse_additive_expression(tokens):
-    root_expression = parse_term(tokens)
-
-    while tokens.peek().type in ['addition_operator', 'negation']:
-        operation = next(tokens).type
-        e2 = parse_term(tokens)
-        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
-
-    return root_expression
-
-def parse_relational_expression(tokens):
-    root_expression = parse_additive_expression(tokens)
-
-    while tokens.peek().type in ['less_than', 'less_than_or_equal', 'greater_than', 'greater_than_or_equal']:
-        operation = next(tokens).type
-        e2 = parse_additive_expression(tokens)
-        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
-
-    return root_expression
-
-def parse_equality_expression(tokens):
-    root_expression = parse_relational_expression(tokens)
-
-    while tokens.peek().type in ['equal_comparison', 'not_equal_comparison']:
-        operation = next(tokens).type
-        e2 = parse_relational_expression(tokens)
-        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
-
-    return root_expression
-
-def parse_logical_and_expression(tokens):
-    root_expression = parse_equality_expression(tokens)
-
-    while tokens.peek().type in ['logical_and']:
-        operation = next(tokens).type
-        e2 = parse_equality_expression(tokens)
-        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
-
-    return root_expression
-
-def parse_expression(tokens):
-    root_expression = parse_logical_and_expression(tokens)
-
-    while tokens.peek().type in ['logical_or']:
-        operation = next(tokens).type
-        e2 = parse_logical_and_expression(tokens)
-        root_expression = ast_data_structures.BinaryOperator(operation, root_expression, e2)
-
-    return root_expression
+# Binary Operation Operator Precedence
+parse_term = lambda tokens: parse_binary_operation(tokens, parse_factor, ['multiplication_operator', 'division_operator'])
+parse_additive_expression = lambda tokens: parse_binary_operation(tokens, parse_term, ['addition_operator', 'negation'])
+parse_relational_expression = lambda tokens: parse_binary_operation(tokens, parse_additive_expression, ['less_than', 'less_than_or_equal', 'greater_than', 'greater_than_or_equal'])
+parse_equality_expression = lambda tokens: parse_binary_operation(tokens, parse_relational_expression, ['equal_comparison', 'not_equal_comparison'])
+parse_logical_and_expression = lambda tokens: parse_binary_operation(tokens, parse_equality_expression, ['logical_and'])
+parse_expression = lambda tokens: parse_binary_operation(tokens, parse_logical_and_expression, ['logical_or'])
 
 def parse_statement(tokens):
     token = next(tokens)
