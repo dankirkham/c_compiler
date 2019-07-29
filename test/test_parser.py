@@ -7,7 +7,7 @@ class TestParser(unittest.TestCase):
     def test_parser(self):
         tokens = [
             Token(type='int_keyword', value='int', line=1, col=1),
-            Token(type='identifer', value='main', line=1, col=5),
+            Token(type='identifier', value='main', line=1, col=5),
             Token(type='open_parenthesis', value='(', line=1, col=9),
             Token(type='close_parenthesis', value=')', line=1, col=10),
             Token(type='open_brace', value='{', line=1, col=12),
@@ -28,7 +28,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(function.name, 'main')
 
         # Statement
-        statement = function.statement
+        statement = function.statements[0]
         self.assertTrue(isinstance(statement, ast_data_structures.ReturnStatement))
 
         # Expression

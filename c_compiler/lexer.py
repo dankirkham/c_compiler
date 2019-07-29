@@ -53,7 +53,7 @@ TOKENS = [
         'regex': re.compile('(return)(?:\W|$)')
     },
     {
-        'type': 'identifer',
+        'type': 'identifier',
         'regex': re.compile('([a-zA-Z]\w*)')
     },
     {
@@ -115,6 +115,10 @@ TOKENS = [
     {
         'type': 'greater_than_or_equal',
         'regex': re.compile('(\>=)')
+    },
+    {
+        'type': 'assignment',
+        'regex': re.compile('(=[^=])')
     },
 ]
 

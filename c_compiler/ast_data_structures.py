@@ -12,13 +12,18 @@ class Program:
 {}'''.format(indent(repr(self.function_declaration)))
 
 class Function:
-    def __init__(self, name, statement):
+    def __init__(self, name, statements, symbol_map):
         self.name = name
-        self.statement = statement
+        self.statements = statements
+        self.symbol_map = symbol_map
 
     def __repr__(self):
-        return '''Function "{}":
-{}'''.format(self.name, indent(repr(self.statement)))
+        s = "Function '{}':\n".format(self.name)
+
+        for statement in self.statements:
+            s += indent(repr(statement))
+
+        return s
 
 class ReturnStatement:
     def __init__(self, expression):
@@ -27,6 +32,23 @@ class ReturnStatement:
     def __repr__(self):
         return '''ReturnStatement:
 {}'''.format(indent(repr(self.expression)))
+
+class DeclareStatement:
+    def __init__(self, expression, identifier):
+        self.expression = expression
+        self.identifier = identifier
+
+    def __repr__(self):
+        return '''DeclareStatement:
+\tIdentifier: {}
+Expression: {}'''.format(self.identifier, indent(repr(self.expression)))
+
+class Variable:
+    def __init__(self, identifier):
+        self.identifier = identifier
+
+    def __repr__(self):
+        return '''Variable: {}\n'''.format(repr(self.identifier))
 
 class Constant:
     def __init__(self, integer):

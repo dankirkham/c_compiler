@@ -12,7 +12,7 @@ class TestLexer(unittest.TestCase):
 
         expected_tokens = [
             Token(type='int_keyword', value='int', line=1, col=1),
-            Token(type='identifer', value='main', line=1, col=5),
+            Token(type='identifier', value='main', line=1, col=5),
             Token(type='open_parenthesis', value='(', line=1, col=9),
             Token(type='close_parenthesis', value=')', line=1, col=10),
             Token(type='open_brace', value='{', line=1, col=12),
@@ -34,7 +34,7 @@ class TestLexer(unittest.TestCase):
 
         expected_tokens = [
             Token(type='int_keyword', value='int', line=1, col=1),
-            Token(type='identifer', value='main', line=2, col=13),
+            Token(type='identifier', value='main', line=2, col=13),
             Token(type='open_parenthesis', value='(', line=2, col=17),
             Token(type='close_parenthesis', value=')', line=2, col=21),
             Token(type='open_brace', value='{', line=2, col=23),

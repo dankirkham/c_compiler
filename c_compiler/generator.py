@@ -1,9 +1,11 @@
 from c_compiler import ast_data_structures, symbols
 
-def generate_binary_operator(expression, symbol_table, f):
-    generate_expression(expression.expression2, symbol_table, f)
+def generate_binary_operator(expression, symbol_table, symbol_map, f):
+    generate_expression(expression.expression2, symbol_table, symbol_map, f)
     f.write("push    %rax\n")
-    generate_expression(expression.expression1, symbol_table, f)
+
+    if expression.operation != "assignment":
+        generate_expression(expression.expression1, symbol_table, symbol_map, f)
 
     operation = expression.operation
     if operation == "logical_or":
@@ -77,10 +79,14 @@ def generate_binary_operator(expression, symbol_table, f):
         f.write("pop     %rcx\n") # e2 to RCX
         f.write("cqto\n")
         f.write("idivq   %rcx\n")
+    elif operation == "assignment":
+        f.write("pop     %rax\n") # e2 to RAX
+        f.write("movq    %rax, {}(%rbp)\n".format(symbol_map.resolve(expression.expression1)))
 
-def generate_expression(expression, symbol_table, f):
+
+def generate_expression(expression, symbol_table, symbol_map, f):
     if isinstance(expression, ast_data_structures.UnaryOperator):
-        generate_expression(expression.expression, symbol_table, f)
+        generate_expression(expression.expression, symbol_table, symbol_map, f)
 
         if expression.operator == 'negation':
             f.write("neg     %rax\n")
@@ -91,18 +97,31 @@ def generate_expression(expression, symbol_table, f):
             f.write("movq    $0, %rax\n")
             f.write("sete    %al\n")
     elif isinstance(expression, ast_data_structures.BinaryOperator):
-        generate_binary_operator(expression, symbol_table, f)
+        generate_binary_operator(expression, symbol_table, symbol_map, f)
     elif isinstance(expression, ast_data_structures.Constant):
         f.write("movq    ${}, %rax\n".format(expression.integer))
+    elif isinstance(expression, ast_data_structures.Variable):
+        f.write("movq    {}(%rbp), %rax\n".format(symbol_map.resolve(expression.identifier)))
 
-def generate_statement(statement, symbol_table, f):
-    # TODO: Currently assuming return statement
+def generate_statement(statement, symbol_table, symbol_map, f):
+    if isinstance(statement, ast_data_structures.ReturnStatement):
+        generate_expression(statement.expression, symbol_table, symbol_map, f)
 
-    generate_expression(statement.expression, symbol_table, f)
+        # Epilogue
+        f.write("movq    %rbp, %rsp\n") # Restore RSP, now points to old RBP
+        f.write("pop     %rbp\n") # Restore old RBP, now points to where it did before function prologue
+        f.write("ret\n") # Return from function
+    elif isinstance(statement, ast_data_structures.DeclareStatement):
+        if statement.expression:
+            generate_expression(statement.expression, symbol_table, symbol_map, f)
 
-    f.write("ret\n")
+            # f.write("pop     %rax\n") # e2 to RAX
+            f.write("movq    %rax, {}(%rbp)\n".format(symbol_map.resolve(statement.identifier)))
+    else: # Expression
+        generate_expression(statement, symbol_table, symbol_map, f)
 
 def generate_function(function, symbol_table, f):
+    symbol_map = function.symbol_map
     label = function.name
 
     # macOS
@@ -113,8 +132,21 @@ def generate_function(function, symbol_table, f):
     f.write(".globl {}\n".format(label))
     f.write("{}:\n".format(label))
 
-    # TODO: Generate all body statements
-    generate_statement(function.statement, symbol_table, f)
+    # Prologue
+    f.write("push    %rbp\n") # Save old value of RBP
+    f.write("movq    %rsp, %rbp\n") # Current top of stack is bottom of old stack frame.
+    f.write("subq    ${}, %rsp\n".format(symbol_map.size())) # Allocate local variables
+
+    for statement in function.statements:
+        generate_statement(statement, symbol_table, symbol_map, f)
+
+    # Generate return for function not ending in return.
+    if len(function.statements) == 0 or not isinstance(function.statements[-1], ast_data_structures.ReturnStatement):
+        # Epilogue
+        f.write("movq    $0, %rax\n") # Return 0
+        f.write("movq    %rbp, %rsp\n") # Restore RSP, now points to old RBP
+        f.write("pop     %rbp\n") # Restore old RBP, now points to where it did before function prologue
+        f.write("ret\n") # Return from function
 
 def generate_program(program, symbol_table, f):
     # TODO: Generate all functions
